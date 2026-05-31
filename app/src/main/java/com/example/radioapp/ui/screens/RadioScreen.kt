@@ -133,7 +133,7 @@ fun RadioScreen(viewModel: RadioViewModel = viewModel()) {
                 showAddDialog = false
                 editingStation = null
             },
-            onSave = { name, url ->
+            onSave = { name: String, url: String ->
                 if (editingStation != null) {
                     viewModel.updateStation(editingStation!!.id, name, url)
                 } else {
