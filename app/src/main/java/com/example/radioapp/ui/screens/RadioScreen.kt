@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.radioapp.data.RadioStation
 import com.example.radioapp.viewmodel.RadioViewModel
+import com.example.radioapp.ui.components.StationItem
+import com.example.radioapp.ui.dialogs.StationEditDialog
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -61,7 +63,8 @@ fun RadioScreen(viewModel: RadioViewModel = viewModel()) {
                 .padding(paddingValues)
         ) {
             // Now Playing Bar
-            if (uiState.currentStation != null) {
+            val currentStation = uiState.currentStation
+            if (currentStation != null) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -79,7 +82,7 @@ fun RadioScreen(viewModel: RadioViewModel = viewModel()) {
                                 style = MaterialTheme.typography.labelSmall
                             )
                             Text(
-                                text = uiState.currentStation.name,
+                                text = currentStation.name,
                                 style = MaterialTheme.typography.titleMedium,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
@@ -127,15 +130,16 @@ fun RadioScreen(viewModel: RadioViewModel = viewModel()) {
     
     // Add/Edit Dialog
     if (showAddDialog || editingStation != null) {
+        val station = editingStation
         StationEditDialog(
-            station = editingStation,
+            station = station,
             onDismiss = {
                 showAddDialog = false
                 editingStation = null
             },
             onSave = { name: String, url: String ->
-                if (editingStation != null) {
-                    viewModel.updateStation(editingStation!!.id, name, url)
+                if (station != null) {
+                    viewModel.updateStation(station.id, name, url)
                 } else {
                     viewModel.addCustomStation(name, url)
                 }
@@ -147,14 +151,15 @@ fun RadioScreen(viewModel: RadioViewModel = viewModel()) {
     
     // Delete Confirmation Dialog
     if (stationToDelete != null) {
+        val toDelete = stationToDelete!!
         AlertDialog(
             onDismissRequest = { stationToDelete = null },
             title = { Text("删除电台") },
-            text = { Text("确定要删除 ${stationToDelete?.name} 吗？") },
+            text = { Text("确定要删除 ${toDelete.name} 吗？") },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.deleteStation(stationToDelete!!)
+                        viewModel.deleteStation(toDelete)
                         stationToDelete = null
                     }
                 ) {
