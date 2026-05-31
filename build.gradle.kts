@@ -4,6 +4,6 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" apply false
 }
 
-task<Delete>("clean") {
-    delete(rootProject.buildDir)
+tasks.register("clean", Delete::class) {
+    delete(rootProject.layout.buildDirectory)
 }
