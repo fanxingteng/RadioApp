@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v4
     
@@ -16,10 +17,21 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        
+    
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-      
+      env:
+        ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+      run: |
+        mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+        cd $ANDROID_SDK_ROOT/cmdline-tools
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdtools.zip
+        unzip -q cmdtools.zip
+        mv cmdline-tools latest
+        rm cmdtools.zip
+        echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+        yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
+        $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+
     - name: Cache Gradle packages
       uses: actions/cache@v4
       with:
@@ -29,13 +41,13 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-    
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-      
+
     - name: Build with Gradle
       run: ./gradlew assembleDebug
-      
+
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
