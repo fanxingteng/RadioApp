@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">网络收音机</string>
+    <string name="title_activity_main">网络收音机</string>
+    <string name="radio_station_hint">输入电台链接</string>
+    <string name="add_station">添加电台</string>
+    <string name="edit_station">编辑电台</string>
+    <string name="station_name">电台名称</string>
+    <string name="station_url">电台链接</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="delete">删除</string>
+    <string name="confirm_delete">确定删除？</string>
+    <string name="now_playing">正在播放</string>
+    <string name="auto_play">自动播放</string>
+    <string name="no_stations">暂无电台，请添加</string>
+</resources>
